@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Pub Réseaux Sociaux · Agnes</title>
+<style>
+:root{
+  --bg:#0a0e1a; --card:#121826; --border:#232b3d;
+  --text:#e8ecf5; --muted:#8b95a8;
+  --primary:#6366f1; --primary2:#8b5cf6;
+  --success:#10b981; --danger:#ef4444; --warn:#f59e0b;
+  --gold:#fbbf24; --pink:#ec4899;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:radial-gradient(1200px 600px at 20% -10%,#1e1b4b 0%,transparent 60%),
+  radial-gradient(900px 500px at 100% 0%,#7c2d12 0%,transparent 55%),var(--bg);
+  color:var(--text); min-height:100vh; padding:24px 16px 60px;}
+.container{max-width:1300px;margin:0 auto}
+header{display:flex;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.logo{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--pink),var(--gold));font-size:28px;
+  box-shadow:0 8px 24px rgba(236,72,153,.35);}
+header h1{font-size:22px;letter-spacing:-.3px}
+header p{color:var(--muted);font-size:13px;margin-top:2px}
+.grid{display:grid;grid-template-columns:1fr 1.1fr;gap:20px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,rgba(18,24,38,.9),rgba(18,24,38,.7));
+  border:1px solid var(--border);border-radius:16px;padding:20px;
+  backdrop-filter:blur(10px);margin-bottom:20px;}
+.card h2{font-size:14px;text-transform:uppercase;letter-spacing:.6px;
+  color:var(--muted);margin-bottom:16px;font-weight:700;
+  display:flex;align-items:center;gap:8px;}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600;}
+.field input,.field select,.field textarea{
+  width:100%;padding:11px 13px;border-radius:10px;border:1px solid var(--border);
+  background:#0c1220;color:var(--text);font-size:14px;font-family:inherit;
+  outline:none;-webkit-appearance:none;}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.btn{width:100%;padding:13px;border-radius:10px;border:none;cursor:pointer;
+  font-size:14px;font-weight:700;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-primary{background:linear-gradient(135deg,var(--pink),var(--gold));
+  color:#fff;box-shadow:0 6px 20px rgba(236,72,153,.35);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-danger{background:rgba(239,68,68,.12);color:#fca5a5;
+  border:1px solid rgba(239,68,68,.3);display:none;}
+.btn-danger.visible{display:flex}
+.progress{height:6px;background:#0c1220;border-radius:4px;overflow:hidden;margin-top:14px}
+.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--pink),var(--gold));
+  transition:width .3s;border-radius:4px}
+.log{background:#070b14;border:1px solid var(--border);border-radius:10px;
+  padding:12px;height:220px;overflow-y:auto;font-family:monospace;font-size:12px;line-height:1.7;}
+.log-line{color:var(--muted);word-break:break-word}
+.log-line.info{color:#93c5fd}.log-line.ok{color:var(--success)}
+.log-line.err{color:var(--danger)}.log-line.warn{color:var(--warn)}
+.upload-zone{position:relative;border:2px dashed var(--border);border-radius:12px;
+  padding:22px 16px;text-align:center;cursor:pointer;background:#0c1220;display:block;}
+.upload-zone input[type="file"]{position:absolute;width:1px;height:1px;opacity:0;}
+.upload-zone .icon{font-size:34px;opacity:.6;margin-bottom:8px}
+.upload-zone .t1{font-size:14px;font-weight:600}
+.upload-zone .t2{font-size:11px;color:var(--muted);margin-top:4px}
+.images-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));
+  gap:8px;margin-top:12px;}
+.image-card{position:relative;border-radius:8px;overflow:hidden;
+  border:1px solid var(--border);background:#0c1220;aspect-ratio:9/16;}
+.image-card img{width:100%;height:100%;object-fit:cover;display:block}
+.image-card .rm{position:absolute;top:4px;right:4px;width:22px;height:22px;
+  background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;font-size:12px;cursor:pointer;}
+.hook-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;}
+.hook-card{padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+  background:#0c1220;cursor:pointer;display:flex;flex-direction:column;gap:4px;
+  transition:.15s;text-align:left;}
+.hook-card:active{transform:scale(.97)}
+.hook-card.selected{background:linear-gradient(135deg,rgba(236,72,153,.25),rgba(251,191,36,.2));
+  border-color:var(--pink);color:#fff;}
+.hook-card .hc-emoji{font-size:18px}
+.hook-card .hc-name{font-size:12px;font-weight:700}
+.hook-card .hc-desc{font-size:10px;opacity:.7;line-height:1.2}
+.storyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.sb-slot{padding:12px 8px;border-radius:10px;border:1px dashed var(--border);
+  background:#0c1220;text-align:center;min-height:100px;display:flex;
+  flex-direction:column;justify-content:center;gap:4px;}
+.sb-slot .sb-num{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.sb-slot .sb-role{font-size:13px;font-weight:700;color:var(--text)}
+.sb-slot .sb-dur{font-size:10px;color:var(--gold)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.gallery-item{background:#000;border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;position:relative;animation:fadeIn .4s ease;}
+.gallery-item video{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;background:#000}
+.gallery-item .g-caption{padding:8px 10px;background:var(--card);font-size:11px;
+  display:flex;justify-content:space-between;align-items:center;}
+.gallery-item .g-tag{font-size:9px;padding:2px 8px;border-radius:10px;
+  background:linear-gradient(135deg,var(--pink),var(--gold));color:#fff;font-weight:700;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.empty{text-align:center;color:var(--muted);font-size:13px;padding:40px 20px;
+  border:1px dashed var(--border);border-radius:12px;}
+.empty .big{font-size:40px;opacity:.5;margin-bottom:10px}
+.hint{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo">📱</div>
+    <div>
+      <h1>Pub Réseaux Sociaux</h1>
+      <p>Hook 3s + Corps 6s + CTA 3s · TikTok / Reels / Shorts</p>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>🔑 Clé API Agnes</h2>
+        <div style="display:flex;gap:6px">
+          <input type="password" id="apiKeyInput" placeholder="sk-..." autocomplete="off"
+            style="flex:1;padding:11px 13px;border-radius:10px;border:1px solid var(--border);background:#0c1220;color:var(--text);font-family:monospace;">
+          <button class="btn btn-primary" id="saveKeyBtn" style="width:auto;padding:0 18px;">OK</button>
+        </div>
+        <div class="hint">Clé gratuite sur platform.agnes-ai.com</div>
+      </div>
+
+      <div class="card">
+        <h2>🖼️ Votre produit / sujet</h2>
+        <label class="upload-zone" for="fileInput">
+          <input type="file" id="fileInput" accept="image/*" multiple />
+          <div class="icon">＋</div>
+          <div class="t1">Ajouter 1 ou plusieurs images</div>
+          <div class="t2">Sera utilisé pour le hook et le corps de la pub</div>
+        </label>
+        <div class="images-grid" id="imagesGrid"></div>
+      </div>
+
+      <div class="card">
+        <h2>🎯 Type de pub</h2>
+        <div class="field">
+          <label>Catégorie</label>
+          <select id="adType">
+            <option value="product">🛍️ Produit e-commerce</option>
+            <option value="service">💼 Service / SaaS</option>
+            <option value="brand">🏢 Marque / Entreprise</option>
+            <option value="personal">👤 Marque personnelle</option>
+            <option value="event">🎉 Événement</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Message clé (accroche ou bénéfice)</label>
+          <textarea id="adMessage" placeholder="Ex : Le café qui réveille vos matins en 30 secondes."></textarea>
+        </div>
+        <div class="field">
+          <label>CTA (call-to-action final)</label>
+          <input type="text" id="adCta" placeholder="Ex : Lien en bio · Commandez maintenant" value="Lien en bio">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🎬 Structure du spot</h2>
+        <div class="storyboard">
+          <div class="sb-slot">
+            <div class="sb-num">Plan 1</div>
+            <div class="sb-role">🪝 Hook</div>
+            <div class="sb-dur">3 secondes</div>
+          </div>
+          <div class="sb-slot">
+            <div class="sb-num">Plan 2</div>
+            <div class="sb-role">🎬 Corps</div>
+            <div class="sb-dur">6 secondes</div>
+          </div>
+          <div class="sb-slot">
+            <div class="sb-num">Plan 3</div>
+            <div class="sb-role">📣 CTA</div>
+            <div class="sb-dur">3 secondes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🚀 Lancer la génération</h2>
+        <button class="btn btn-primary" id="generateBtn" disabled>Créer la publicité</button>
+        <button class="btn btn-danger" id="stopBtn" style="margin-top:10px">⏹ Arrêter</button>
+        <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>📺 Plans générés</h2>
+        <div id="gallery" class="gallery">
+          <div class="empty"><div class="big">🎥</div><div>La publicité apparaîtra ici</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📋 Journal</h2>
+        <div class="log" id="log">
+          <div class="log-line info">Prêt. Collez votre clé Agnes puis ajoutez vos images.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+// ═══════════════════════════════════════════════════════════════
+// BLINDAGE ANTI-RECHARGEMENT
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('submit', e => { e.preventDefault(); e.stopPropagation(); return false; }, true);
+document.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.id !== 'apiKeyInput'){
+    e.preventDefault();
+  }
+}, true);
+
+// ═══════════════════════════════════════════════════════════════
+// CONFIG AGNES (protocoles validés — ne pas modifier)
+// ═══════════════════════════════════════════════════════════════
+const API_BASE = 'https://apihub.agnes-ai.com/v1';
+const POLL_BASE = 'https://apihub.agnes-ai.com/agnesapi';
+const MODEL_TEXT = 'agnes-2.5-flash';
+const MODEL_VIDEO = 'agnes-video-v2.0';
+const FRAME_RATE = 24;
+
+const CREATE_INTERVAL_MIN = 62000;
+const CREATE_INTERVAL_MAX = 90000;
+const CREATE_INTERVAL_SAFE = 75000;
+let createIntervalMs = CREATE_INTERVAL_MIN;
+
+const POLL_INTERVAL_SEC = 8;
+const MAX_POLL_ATTEMPTS = 100;
+
+const TIMING_CACHE_KEY = 'agnes_timing_cache_pub';
+const API_KEY_STORAGE = 'agnes_api_key_pub';
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+const state = {
+  images: [],
+  isRunning: false,
+  stopRequested: false,
+  queue: [],       // 3 plans : hook, corps, cta
+  completed: 0,
+  failed: 0,
+  adType: 'product',
+  adMessage: '',
+  adCta: 'Lien en bio',
+  durationFrames: 153   // 6.4s par plan (recommandé Agnes)
+};
+
+// ═══════════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function log(msg, type){
+  type = type || 'info';
+  const el = $('log');
+  const line = document.createElement('div');
+  line.className = 'log-line ' + type;
+  line.textContent = '[' + new Date().toLocaleTimeString('fr-FR') + '] ' + msg;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+  console.log('[Pub]', msg);
+}
+function setProgress(p){ $('progressBar').style.width = Math.max(0,Math.min(100,p)) + '%'; }
+
+// ═══════════════════════════════════════════════════════════════
+// CLÉ API
+// ═══════════════════════════════════════════════════════════════
+function getKey(){ try { return (localStorage.getItem(API_KEY_STORAGE) || '').trim(); } catch(e){ return ''; } }
+function saveKey(){
+  const v = $('apiKeyInput').value.trim();
+  try {
+    if(v) localStorage.setItem(API_KEY_STORAGE, v);
+    else localStorage.removeItem(API_KEY_STORAGE);
+  } catch(e){}
+  updateGenerateBtn();
+  log(v ? 'Clé API enregistrée.' : 'Clé supprimée.', v ? 'ok' : 'warn');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// IMAGES
+// ═══════════════════════════════════════════════════════════════
+function fileToDataUri(file){
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = () => rej(new Error('Erreur lecture'));
+    r.readAsDataURL(file);
+  });
+}
+function generateThumbnail(dataUri){
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const c = document.createElement('canvas');
+        const ratio = img.height / img.width;
+        c.width = 200; c.height = Math.round(200 * ratio);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.7));
+      } catch(e){ resolve(dataUri); }
+    };
+    img.onerror = () => resolve(dataUri);
+    img.src = dataUri;
+  });
+}
+async function handleFiles(files){
+  const list = Array.from(files).filter(f => f.type.startsWith('image/'));
+  for(const f of list){
+    const dataUri = await fileToDataUri(f);
+    const thumbnail = await generateThumbnail(dataUri);
+    state.images.push({ file: f, dataUri, thumbnail, id: Date.now()+Math.random() });
+  }
+  renderImages();
+  updateGenerateBtn();
+}
+function renderImages(){
+  const g = $('imagesGrid');
+  g.innerHTML = state.images.map(img =>
+    '<div class="image-card"><img src="'+(img.thumbnail||img.dataUri)+'"><button class="rm" data-rm="'+img.id+'">✕</button></div>'
+  ).join('');
+  g.querySelectorAll('[data-rm]').forEach(b => {
+    b.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      state.images = state.images.filter(x => String(x.id) !== b.dataset.rm);
+      renderImages(); updateGenerateBtn();
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FETCH AVEC RETRY
+// ═══════════════════════════════════════════════════════════════
+async function apiFetch(url, options, label){
+  label = label || 'API';
+  for(let attempt = 0; attempt < 7; attempt++){
+    if(state.stopRequested) throw new Error('Arrêt demandé');
+    try {
+      const res = await fetch(url, options);
+      if(res.status === 429){
+        const wait = [15,30,45,60,90,120,180][Math.min(attempt,6)];
+        log(label+' : 429, attente '+wait+'s', 'warn');
+        await sleep(wait*1000);
+        continue;
+      }
+      if(res.status === 503){
+        const wait = [5,10,15,20,30,45][Math.min(attempt,5)];
+        log(label+' : 503, attente '+wait+'s', 'warn');
+        await sleep(wait*1000);
+        continue;
+      }
+      return res;
+    } catch(e){
+      if(e.message === 'Arrêt demandé') throw e;
+      const wait = [3,5,8,12,20,30][Math.min(attempt,5)];
+      log(label+' : réseau, retry '+wait+'s', 'warn');
+      await sleep(wait*1000);
+    }
+  }
+  return fetch(url, options);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TIMING CACHE
+// ═══════════════════════════════════════════════════════════════
+function estimateGenerationTime(){
+  try {
+    const c = JSON.parse(localStorage.getItem(TIMING_CACHE_KEY) || '{}');
+    const s = c[String(state.durationFrames)];
+    if(s && s.length) return s.reduce((a,b)=>a+b,0) / s.length;
+  } catch(e){}
+  return 30000 + state.durationFrames * 500;
+}
+function recordGenerationTime(ms){
+  try {
+    const c = JSON.parse(localStorage.getItem(TIMING_CACHE_KEY) || '{}');
+    const k = String(state.durationFrames);
+    if(!c[k]) c[k] = [];
+    c[k].push(ms);
+    if(c[k].length > 10) c[k] = c[k].slice(-10);
+    localStorage.setItem(TIMING_CACHE_KEY, JSON.stringify(c));
+  } catch(e){}
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PROMPTS PAR TYPE DE PUB
+// ═══════════════════════════════════════════════════════════════
+const AD_TYPE_LABELS = {
+  product: 'e-commerce product',
+  service: 'professional service',
+  brand: 'brand identity',
+  personal: 'personal brand',
+  event: 'event promotion'
+};
+
+function buildHookPrompt(){
+  const msg = state.adMessage || 'the product in the image';
+  return [
+    'VERTICAL 9:16 SOCIAL MEDIA AD — HOOK (3 seconds).',
+    'Animate this exact image as the opening frame. The subject must remain IDENTICAL: same product, same colors, same branding, same identity. This is a CONTINUATION of the source image, not a re-imagination.',
+    'Visual style: eye-catching, dynamic, high-contrast, quick reveal.',
+    'Camera: fast dolly-in, dynamic reveal, punch-in.',
+    'Message to convey visually: ' + msg,
+    'Preserve the exact composition and layout of the original product.',
+    'Vibrant colors, saturated, trending TikTok/Reels aesthetic.',
+    'Portrait 9:16 vertical, 24fps, no on-screen text, no watermarks.'
+  ].join(' ');
+}
+
+function buildBodyPrompt(){
+  const msg = state.adMessage || 'the product in the image';
+  return [
+    'VERTICAL 9:16 SOCIAL MEDIA AD — BODY (6 seconds).',
+    'Animate this exact image as the starting frame. Subject must remain IDENTICAL.',
+    'Visual style: demonstration, showcase, lifestyle context.',
+    'Camera: slow rotating orbit around the subject, elegant movement.',
+    'Message: ' + msg,
+    'Lighting: warm, appealing, premium product photography look.',
+    'Portrait 9:16 vertical, 24fps, no on-screen text, no watermarks.'
+  ].join(' ');
+}
+
+function buildCtaPrompt(){
+  const cta = state.adCta || 'Link in bio';
+  return [
+    'VERTICAL 9:16 SOCIAL MEDIA AD — CALL TO ACTION (3 seconds).',
+    'Animate this exact image as the closing frame. Subject must remain IDENTICAL.',
+    'Visual style: closing shot, pulsing glow, warm inviting light.',
+    'Camera: slow pull-back revealing the full product.',
+    'Final message on screen area (leave clean for overlay): ' + cta,
+    'Lighting: golden hour warm, hopeful, energetic.',
+    'Portrait 9:16 vertical, 24fps, no on-screen text, no watermarks.'
+  ].join(' ');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// API VIDÉO
+// ═══════════════════════════════════════════════════════════════
+async function createVideoTask(imageDataUri, prompt){
+  const body = {
+    model: MODEL_VIDEO,
+    prompt: prompt,
+    image: imageDataUri,
+    num_frames: state.durationFrames,
+    frame_rate: FRAME_RATE
+  };
+  const res = await apiFetch(API_BASE + '/videos', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + getKey(), 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }, 'Création');
+  if(!res.ok){
+    const err = await res.text();
+    throw new Error('HTTP '+res.status+' — '+err.slice(0,200));
+  }
+  const data = await res.json();
+  return data.video_id || data.id || data.task_id;
+}
+
+async function pollVideo(videoId, onProgress){
+  const estSec = estimateGenerationTime() / 1000;
+  let remaining = Math.max(20, Math.floor(estSec * 0.8));
+  while(remaining > 0){
+    if(state.stopRequested) throw new Error('Arrêt demandé');
+    onProgress('Préparation… — '+remaining+'s');
+    await sleep(1000);
+    remaining--;
+  }
+  for(let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt++){
+    if(state.stopRequested) throw new Error('Arrêt demandé');
+    if(attempt > 0){
+      let r = POLL_INTERVAL_SEC;
+      while(r > 0){
+        if(state.stopRequested) throw new Error('Arrêt demandé');
+        onProgress('En cours… — '+r+'s');
+        await sleep(1000); r--;
+      }
+    }
+    const url = POLL_BASE + '?video_id=' + encodeURIComponent(videoId) + '&model_name=' + encodeURIComponent(MODEL_VIDEO);
+    const res = await apiFetch(url, { method:'GET', headers:{ 'Authorization': 'Bearer ' + getKey() } }, 'Polling');
+    const d = await res.json();
+    const status = d.status || 'unknown';
+    const progress = d.progress || 0;
+    onProgress('Création… '+progress+'%');
+    if(status === 'completed' || status === 'succeeded' || status === 'done'){
+      const videoUrl = (d.metadata && d.metadata.url) || d.url || (d.output && d.output.url);
+      if(!videoUrl) throw new Error('Terminé sans URL');
+      return videoUrl;
+    }
+    if(status === 'failed' || status === 'error' || status === 'cancelled'){
+      throw new Error('Échec ('+status+')');
+    }
+  }
+  throw new Error('Timeout');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UI — GALERIE
+// ═══════════════════════════════════════════════════════════════
+function renderGallery(){
+  const el = $('gallery');
+  const done = state.queue.filter(q => q.status === 'done' && q.videoUrl);
+  if(!done.length){
+    el.innerHTML = '<div class="empty"><div class="big">🎥</div><div>La publicité apparaîtra ici</div></div>';
+    return;
+  }
+  el.innerHTML = done.map(s =>
+    '<div class="gallery-item">' +
+      '<video src="'+s.videoUrl+'" controls preload="metadata" muted playsinline></video>' +
+      '<div class="g-caption">' +
+        '<span>'+s.role+' — Plan '+s.planNum+'</span>' +
+        '<span class="g-tag">'+s.duration+'s</span>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function updateGenerateBtn(){
+  const btn = $('generateBtn');
+  const hasKey = !!getKey();
+  const hasImg = state.images.length > 0;
+  btn.disabled = !hasKey || !hasImg || state.isRunning;
+  if(state.isRunning) btn.textContent = '⏳ Génération… ('+(state.completed+state.failed)+'/3)';
+  else if(!hasKey) btn.textContent = 'Ajoutez votre clé API';
+  else if(!hasImg) btn.textContent = 'Ajoutez des images';
+  else btn.textContent = '🚀 Créer la publicité (3 plans)';
+  $('stopBtn').classList.toggle('visible', state.isRunning);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PIPELINE
+// ═══════════════════════════════════════════════════════════════
+async function startGeneration(){
+  if(state.isRunning || !state.images.length || !getKey()) return;
+  state.isRunning = true;
+  state.stopRequested = false;
+  state.completed = 0;
+  state.failed = 0;
+  state.adType = $('adType').value;
+  state.adMessage = $('adMessage').value.trim();
+  state.adCta = $('adCta').value.trim() || 'Lien en bio';
+
+  // 3 plans : hook / corps / cta (tous sur la 1ère image pour continuité parfaite)
+  const mainImage = state.images[0];
+  state.queue = [
+    { planNum: 1, role: '🪝 Hook', duration: 3, status: 'pending', progress: null, videoId: null, videoUrl: null, startTime: null, image: mainImage, promptFn: buildHookPrompt },
+    { planNum: 2, role: '🎬 Corps', duration: 6, status: 'pending', progress: null, videoId: null, videoUrl: null, startTime: null, image: mainImage, promptFn: buildBodyPrompt },
+    { planNum: 3, role: '📣 CTA', duration: 3, status: 'pending', progress: null, videoId: null, videoUrl: null, startTime: null, image: mainImage, promptFn: buildCtaPrompt }
+  ];
+
+  updateGenerateBtn();
+  renderGallery();
+  setProgress(0);
+  log('Démarrage — Publicité ' + AD_TYPE_LABELS[state.adType], 'info');
+  log('Message : ' + (state.adMessage || '(vide)'), 'info');
+  log('CTA : ' + state.adCta, 'info');
+
+  const pollingTasks = [];
+  try {
+    for(let i = 0; i < state.queue.length; i++){
+      if(state.stopRequested) break;
+      const item = state.queue[i];
+      item.status = 'creating'; item.progress = 'Préparation…';
+      renderGallery();
+      try {
+        const prompt = item.promptFn();
+        item.videoId = await createVideoTask(item.image.dataUri, prompt);
+        item.startTime = Date.now();
+        item.status = 'processing'; item.progress = 'En cours…';
+        log('Plan ' + item.planNum + ' (' + item.role + ') tâche créée : ' + String(item.videoId).slice(0,25) + '…', 'ok');
+        pollingTasks.push((async () => {
+          try {
+            const url = await pollVideo(item.videoId, p => { item.progress = p; });
+            const elapsed = Date.now() - item.startTime;
+            recordGenerationTime(elapsed);
+            item.status = 'done'; item.videoUrl = url;
+            state.completed++;
+            renderGallery(); updateGenerateBtn();
+            log('Plan ' + item.planNum + ' terminé en ' + (elapsed/1000).toFixed(1) + 's', 'ok');
+          } catch(e){
+            item.status = 'failed'; item.progress = 'Échec';
+            state.failed++;
+            renderGallery(); updateGenerateBtn();
+            log('Plan ' + item.planNum + ' : ' + e.message, 'err');
+          }
+        })());
+      } catch(e){
+        item.status = 'failed'; item.progress = 'Échec';
+        state.failed++;
+        renderGallery(); updateGenerateBtn();
+        log('Plan ' + item.planNum + ' échec création : ' + e.message, 'err');
+      }
+      // Espacement obligatoire 62s entre chaque création
+      if(i < state.queue.length - 1 && !state.stopRequested){
+        for(let r = Math.ceil(createIntervalMs/1000); r > 0; r--){
+          if(state.stopRequested) break;
+          item.progress = 'Pause '+r+'s avant plan suivant';
+          await sleep(1000);
+        }
+      }
+      setProgress(Math.round(((i+1)/state.queue.length) * 90));
+    }
+    if(pollingTasks.length) {
+      log('Attente des vidéos en cours…', 'info');
+      await Promise.allSettled(pollingTasks);
+    }
+  } catch(e){
+    log('Erreur globale : '+e.message, 'err');
+  }
+
+  const summary = state.stopRequested
+    ? 'Arrêté — ' + state.completed + '/3 plans'
+    : '✦ ' + state.completed + '/3 plans créés ✦';
+  log(summary, state.completed > 0 ? 'ok' : 'warn');
+  setProgress(100);
+
+  state.isRunning = false;
+  state.stopRequested = false;
+  updateGenerateBtn();
+  renderGallery();
+}
+
+function stopGeneration(){
+  if(!state.isRunning) return;
+  state.stopRequested = true;
+  log('Arrêt demandé…', 'warn');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+function init(){
+  updateGenerateBtn();
+  renderImages();
+  renderGallery();
+
+  $('saveKeyBtn').addEventListener('click', e => { e.preventDefault(); saveKey(); });
+  $('apiKeyInput').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); saveKey(); } });
+  $('fileInput').addEventListener('change', e => { handleFiles(e.target.files); e.target.value = ''; });
+  $('adMessage').addEventListener('input', e => { state.adMessage = e.target.value; });
+  $('adCta').addEventListener('input', e => { state.adCta = e.target.value; });
+  $('adType').addEventListener('change', e => { state.adType = e.target.value; });
+  $('generateBtn').addEventListener('click', e => { e.preventDefault(); startGeneration(); });
+  $('stopBtn').addEventListener('click', e => { e.preventDefault(); stopGeneration(); });
+
+  const saved = getKey();
+  if(saved) $('apiKeyInput').value = saved;
+
+  log('Application prête.', 'ok');
+  log('Pipeline : images → 3 plans (Hook + Corps + CTA) → Agnes Video v2.0', 'info');
+}
+
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+})();
+</script>
+</body>
+</html>
